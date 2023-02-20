@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import top.xiaoboey.practice.single.config.CaffeineConfiguration;
+import top.xiaoboey.practice.single.config.JsonWebTokenConfig;
 import top.xiaoboey.practice.single.pojo.ApiResult;
 import top.xiaoboey.practice.single.dao.SimpleUserRepository;
 import top.xiaoboey.practice.single.entity.SimpleUser;
@@ -68,7 +69,7 @@ public class SimpleUserService implements UserDetailsService {
                 .withIssuer(issuer)
                 .withSubject(user.getUsername())
                 .withJWTId(UUID.randomUUID().toString())
-                .withClaim("authorities", authorityList)
+                .withClaim(JsonWebTokenConfig.CLAIM_AUTHORITIES, authorityList)
                 .withIssuedAt(Date.from(Instant.now()))
                 .withExpiresAt(Date.from(expiresAt))
                 .sign(Algorithm.RSA256(null, rsaPrivateKey));

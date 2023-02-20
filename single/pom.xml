@@ -103,7 +103,8 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
 					<nonFilteredFileExtensions>
-						<nonFilteredFileExtension>jks</nonFilteredFileExtension>
+						<nonFilteredFileExtension>key</nonFilteredFileExtension>
+						<nonFilteredFileExtension>pub</nonFilteredFileExtension>
 					</nonFilteredFileExtensions>
 				</configuration>
 			</plugin>
