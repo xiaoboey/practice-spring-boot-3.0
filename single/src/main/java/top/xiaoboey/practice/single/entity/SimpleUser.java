@@ -24,7 +24,7 @@ public class SimpleUser implements UserDetails, Serializable {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id", table = "simple_authority"))
     private Collection<SimpleAuthority> authorities;
 
     public SimpleUser() {
