@@ -1,5 +1,6 @@
 package top.xiaoboey.practice.single.web;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 import top.xiaoboey.practice.single.pojo.ApiResult;
 import top.xiaoboey.practice.single.service.SimpleUserService;
@@ -19,8 +20,8 @@ public class UserController {
     }
 
     @GetMapping("/hello")
-    public String hello(@RequestParam(required = false) String name) {
-        return String.format("Hello, %s!", Optional.ofNullable(name).orElse("world"));
+    public ApiResult<String> hello(@RequestParam(required = false) String name) {
+        return new ApiResult<String>(HttpServletResponse.SC_OK, null, String.format("Hello, %s!", Optional.ofNullable(name).orElse("world")));
     }
 
     @PostMapping("/login")

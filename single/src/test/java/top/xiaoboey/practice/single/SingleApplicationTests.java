@@ -39,13 +39,13 @@ class SingleApplicationTests {
     void userHello(@Autowired MockMvc mvc) throws Exception {
         mvc.perform(get("/user/hello"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello, world!"));
+                .andExpect(content().json("{\"code\":200,\"content\":\"Hello, world!\"}"));
 
         mvc.perform(MockMvcRequestBuilders.get("/user/hello")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("name", "abc"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello, abc!"));
+                .andExpect(content().json("{\"code\":200,\"content\":\"Hello, abc!\"}"));
     }
 
     /**
