@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StreamUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -50,13 +48,10 @@ public class JsonWebTokenConfig {
     @Bean
     public RSAPrivateKey jwtPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         ClassPathResource resource = new ClassPathResource("jwt_rsa.key");
-        InputStream inputStream = resource.getInputStream();
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        StreamUtils.copy(inputStream, buffer);
-        byte[] keyBytes = buffer.toByteArray();
-        inputStream.close();
-        buffer.close();
-
+        byte[] keyBytes;
+        try (InputStream inputStream = resource.getInputStream()) {
+            keyBytes = inputStream.readAllBytes();
+        }
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
     }
@@ -70,12 +65,10 @@ public class JsonWebTokenConfig {
     @Bean
     public JWTVerifier jwtVerifier() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         ClassPathResource resource = new ClassPathResource("jwt_rsa.pub");
-        InputStream inputStream = resource.getInputStream();
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        StreamUtils.copy(inputStream, buffer);
-        byte[] keyBytes = buffer.toByteArray();
-        inputStream.close();
-        buffer.close();
+        byte[] keyBytes;
+        try(InputStream inputStream = resource.getInputStream()) {
+            keyBytes = inputStream.readAllBytes();
+        }
 
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         RSAPublicKey publicKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(spec);
