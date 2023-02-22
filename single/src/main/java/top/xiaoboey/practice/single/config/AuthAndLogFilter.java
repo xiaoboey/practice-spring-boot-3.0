@@ -124,10 +124,10 @@ public class AuthAndLogFilter extends OncePerRequestFilter {
 
     private void saveAccessLog(String requestId, HttpServletResponse response) {
         if (StringUtils.hasText(requestId)) {
-            SimpleLog logDTO = simpleLogService.getFromCache(requestId);
-            if (logDTO != null && logDTO.getLogTime() == null) {
-                logDTO.setStatusCode(response.getStatus());
-                simpleLogService.saveThenClean(logDTO);
+            SimpleLog simpleLog = simpleLogService.getFromCache(requestId);
+            if (simpleLog != null && simpleLog.getLogTime() == null) {
+                simpleLog.setStatusCode(response.getStatus());
+                simpleLogService.saveThenClean(simpleLog);
             }
         }
     }

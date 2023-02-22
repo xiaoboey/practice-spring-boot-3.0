@@ -2,6 +2,7 @@ package top.xiaoboey.practice.single.web;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
+import top.xiaoboey.practice.single.log.OperationLog;
 import top.xiaoboey.practice.single.pojo.ApiResult;
 import top.xiaoboey.practice.single.service.SimpleUserService;
 
@@ -24,6 +25,7 @@ public class UserController {
         return new ApiResult<String>(HttpServletResponse.SC_OK, null, String.format("Hello, %s!", Optional.ofNullable(name).orElse("world")));
     }
 
+    @OperationLog(operation = "Login")
     @PostMapping("/login")
     public ApiResult<String> login(@RequestParam String name, @RequestParam String pwd) {
         return simpleUserService.login(name, pwd);

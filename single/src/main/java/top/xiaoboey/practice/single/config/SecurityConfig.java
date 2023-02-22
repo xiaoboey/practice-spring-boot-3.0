@@ -1,8 +1,8 @@
 package top.xiaoboey.practice.single.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,7 +15,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import top.xiaoboey.practice.single.entity.SimpleLog;
 import top.xiaoboey.practice.single.pojo.ApiResult;
+import top.xiaoboey.practice.single.service.SimpleLogService;
 
 import java.io.IOException;
 
@@ -26,8 +28,13 @@ import java.io.IOException;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Autowired
-    private AuthAndLogFilter authAndLogFilter;
+    private final AuthAndLogFilter authAndLogFilter;
+    private final SimpleLogService simpleLogService;
+
+    public SecurityConfig(AuthAndLogFilter authAndLogFilter, SimpleLogService simpleLogService) {
+        this.authAndLogFilter = authAndLogFilter;
+        this.simpleLogService = simpleLogService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,7 +64,8 @@ public class SecurityConfig {
      */
     @Bean
     AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, authException) -> handle(response, new ApiResult<>(HttpServletResponse.SC_UNAUTHORIZED, "Token expired or invalid."));
+        return (request, response, authException) -> handle(request, response, simpleLogService,
+                new ApiResult<>(HttpServletResponse.SC_UNAUTHORIZED, "Token expired or invalid."));
     }
 
     /**
@@ -65,7 +73,8 @@ public class SecurityConfig {
      */
     @Bean
     AccessDeniedHandler accessDeniedHandler() {
-        return (request, response, accessDeniedException) -> handle(response, new ApiResult<>(HttpServletResponse.SC_FORBIDDEN, "Access denied."));
+        return (request, response, accessDeniedException) -> handle(request, response, simpleLogService,
+                new ApiResult<>(HttpServletResponse.SC_FORBIDDEN, "Access denied."));
     }
 
     /**
@@ -73,7 +82,15 @@ public class SecurityConfig {
      * @param apiResult
      * @throws IOException
      */
-    private static void handle(HttpServletResponse response, ApiResult<String> apiResult) throws IOException {
+    private static void handle(HttpServletRequest request,
+                               HttpServletResponse response,
+                               SimpleLogService simpleLogService,
+                               ApiResult<String> apiResult) throws IOException {
+        SimpleLog simpleLog = simpleLogService.getFromCache(request.getRequestId());
+        simpleLog.setStatusCode(apiResult.getCode());
+        simpleLog.setStatusMsg(apiResult.getMessage());
+        simpleLogService.saveThenClean(simpleLog);
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(apiResult.getCode());
 
