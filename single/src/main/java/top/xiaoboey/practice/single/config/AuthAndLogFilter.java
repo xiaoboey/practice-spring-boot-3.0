@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class AuthAndLogFilter extends OncePerRequestFilter {
-    @Value("${management.endpoints.web.base-path:/actuator}" + "/")
+    @Value("${management.endpoints.web.base-path:/actuator}")
     private String actuatorBasePath;
 
     private final ObjectMapper objectMapper;
@@ -56,11 +56,11 @@ public class AuthAndLogFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String uri = request.getRequestURI();
+        String servletPath = request.getServletPath();
 
         // Token validation and access logging for the actuator is ignored.
         String requestId = request.getRequestId();
-        if (!uri.startsWith(this.actuatorBasePath)) {
+        if (!servletPath.equals(this.actuatorBasePath)) {
             SimpleLog simpleLog = new SimpleLog(request);
             simpleLog.setQueryParams(objectMapper.writeValueAsString(request.getParameterMap()));
 
