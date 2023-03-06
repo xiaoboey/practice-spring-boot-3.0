@@ -73,14 +73,4 @@ public class CaffeineConfiguration {
         cacheManager.setCaches(caches);
         return cacheManager;
     }
-
-    @Bean
-    CaffeineCache simpleLogCache() {
-        return new CaffeineCache(CACHE_SIMPLE_LOG, Caffeine.newBuilder()
-                .maximumSize(1000)
-                .expireAfterWrite(5, TimeUnit.MINUTES)
-                .recordStats()
-                .build(), false);
-    }
-
 }
