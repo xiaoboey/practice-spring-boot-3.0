@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /app-one
+  shutdown: graceful
+
+spring:
+  application:
+    name: app-one
+  profiles:
+    include: datasource,simplestarter
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database: h2
+    open-in-view: false
+    properties:
+      jakarta.persistence.sharedCache.mode: UNSPECIFIED
+  cache:
+    type: caffeine
+    cache-names: simple_user
+    caffeine:
+      spec: maximumSize=2000,expireAfterAccess=10m,recordStats
+
+management:
+  server:
+    port: 7080
+  endpoints:
+    web.exposure.include: ["info","health","metrics","shutdown"]
+    enabled-by-default: true
+  endpoint:
+    shutdown.enabled: true
+
+logging.level:
+  root: info
+
+
