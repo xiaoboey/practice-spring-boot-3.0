@@ -10,12 +10,9 @@ import top.xiaoboey.practice.spring.boot3.simplestarter.config.AuthAndLogFilter;
 import top.xiaoboey.practice.spring.boot3.simplestarter.config.CaffeineConfiguration;
 import top.xiaoboey.practice.spring.boot3.simplestarter.config.SecurityConfig;
 import top.xiaoboey.practice.spring.boot3.simplestarter.config.SimpleConfiguration;
+import top.xiaoboey.practice.spring.boot3.simplestarter.log.OperationLogAspect;
 import top.xiaoboey.practice.spring.boot3.simplestarter.service.SimpleLogService;
-import top.xiaoboey.practice.spring.boot3.simplestarter.service.SimpleUserService;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import top.xiaoboey.practice.spring.boot3.simplestarter.service.UserAuthService;
 
 /**
  * @author xiaoqb
@@ -46,7 +43,9 @@ public class SimpleImportSelector implements ImportSelector, BeanFactoryAware {
                     SimpleConfiguration.class.getName(),
                     AuthAndLogFilter.class.getName(),
                     SecurityConfig.class.getName(),
-                    SimpleLogService.class.getName()
+                    UserAuthService.class.getName(),
+                    SimpleLogService.class.getName(),
+                    OperationLogAspect.class.getName()
             };
         }
 
