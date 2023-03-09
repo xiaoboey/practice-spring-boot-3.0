@@ -1,2 +1,4 @@
 simple.starter:
-  jwt-issuer: abc
+  jwt-issuer: app-one
+  enable-jwt-private-key: true
+  permit-all-requests: /actuator/**,/user/**

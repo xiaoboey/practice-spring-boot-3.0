@@ -30,10 +30,14 @@ import java.io.IOException;
 public class SecurityConfig {
     private final AuthAndLogFilter authAndLogFilter;
     private final SimpleLogService simpleLogService;
+    private final SimpleProperties simpleProperties;
 
-    public SecurityConfig(AuthAndLogFilter authAndLogFilter, SimpleLogService simpleLogService) {
+    public SecurityConfig(AuthAndLogFilter authAndLogFilter,
+                          SimpleLogService simpleLogService,
+                          SimpleProperties simpleProperties) {
         this.authAndLogFilter = authAndLogFilter;
         this.simpleLogService = simpleLogService;
+        this.simpleProperties = simpleProperties;
     }
 
     @Bean
@@ -46,8 +50,7 @@ public class SecurityConfig {
                 .logout().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/user/**").permitAll()
+                .requestMatchers(simpleProperties.getPermitAllRequests().toArray(new String[0])).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
